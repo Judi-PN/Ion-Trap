@@ -72,3 +72,30 @@ def analyze_heat(d):
     print('winding:', wind(d))
     print('Imax:', Imax(d))
     print('Power:', P(d))
+
+
+
+
+z_vals = np.linspace(-0.25, 0.25, 100)
+Z = np.zeros_like(z_vals)  # Assume z = 0 for the plane
+
+# Calculate the total magnetic field in the z-direction
+B_total_z = np.zeros_like(z_vals)
+for z_index, z_val in enumerate(z_vals):
+    B_total_z[z_index] = B_total(-0.3, 0.001, 0.0, 0.0, z_val)
+  #  B_v_vals = B_v(-0.997514444135389, 0.0005, 0.0, 0.0, z_val)
+ #   B_total_z[z_index] = 2* (B_h_vals + B_v_vals)
+  #  B_total_z[z_index] = np.sqrt(B_h_vals**2 + B_v_vals**2)
+
+
+# Plot the result
+plt.figure(figsize=(8, 6))
+plt.plot(z_vals, B_total_z)
+plt.xlabel('Z')
+plt.ylabel('Total Magnetic Field Strength')
+plt.title('Total Magnetic Field Distribution in the Z-Direction')
+plt.grid(True)
+plt.show()
+
+
+
