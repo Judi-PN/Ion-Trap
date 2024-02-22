@@ -1,0 +1,59 @@
+# Define constants
+#eff_length = lambda d: d  # Assuming effective length is equal to the diameter for simplicity
+Imax = 1.7961570593149538 # Current (A)
+time = 1  # Time duration (hours)
+room_temp = 293  # Room temperature (K)
+specific_heat_copper = 385  # Specific heat of copper (J/kg*K)
+density_copper = 8960  # Density of copper (kg/m^3)
+mass_copper = lambda d: density_copper * np.pi * (d/2)**2 * eff_length(d)  # Mass of copper
+
+
+# Define the range of diameters (d)
+d_vals = np.linspace(0.0001, 0.003, 200)
+
+# Initialize lists to store data
+magnetic_field_data = []
+power_data = []
+heat_data = []
+temp_change_data = []
+
+for d in d_vals:
+    for n in range (wind_l(d)):
+        cham_d = cham + 2*((n-1) * (d + inst))
+        B_val= B_v_l(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_v_r(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_h_t(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_h_b(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_v2_l(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_v2_r(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_h2_t(1.7961570593149538, d_vals, 0, 0, 0) + \
+                                       B_h2_b(1.7961570593149538, d_vals, 0, 0, 0)
+
+
+
+
+    # Calculate power for the given diameter
+   # def P(d) = Imax**2 * R(d)
+    P_val = P(d)
+    # Calculate heat for the given power and time
+    heat_val = heat(P_val, time)
+    # Calculate temperature change for the given heat, mass, and specific heat
+    temp_change_val = temp_change(heat_val, mass_copper(d), specific_heat_copper)
+    
+    # Append the data to the respective lists
+    magnetic_field_data.append(B_val)
+    power_data.append(P_val)
+    heat_data.append(heat_val)
+    temp_change_data.append(temp_change_val)
+
+# Create a DataFrame from the collected data
+df = pd.DataFrame({
+    'Diameter (m)': d_vals,
+    'Magnetic Field (mT)': magnetic_field_data,
+    'Power (W)': power_data,
+    'Heat (J)': heat_data,
+    'Temperature Change (K)': temp_change_data
+})
+
+# Display the DataFrame
+print(df)
