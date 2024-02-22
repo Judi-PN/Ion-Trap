@@ -1,12 +1,34 @@
+import numpy as np
+import pandas as pd
+
 # Define constants
-#eff_length = lambda d: d  # Assuming effective length is equal to the diameter for simplicity
-Imax = 1.7961570593149538 # Current (A)
+eff_length = lambda d: d  # Assuming effective length is equal to the diameter for simplicity
+Imax = 1.7961570593149538  # Current (A)
 time = 1  # Time duration (hours)
 room_temp = 293  # Room temperature (K)
 specific_heat_copper = 385  # Specific heat of copper (J/kg*K)
 density_copper = 8960  # Density of copper (kg/m^3)
-mass_copper = lambda d: density_copper * np.pi * (d/2)**2 * eff_length(d)  # Mass of copper
 
+# Define functions for magnetic field, power, heat, temperature change, and voltage calculations
+def B_total(I, d, x, y, z):
+    # Implementation for calculating total magnetic field
+    pass
+
+def R(d):
+    A = (d/2)**2 * np.pi
+    return rho * eff_length(d) / A
+
+def P(d):
+    return Imax**2 * R(d)
+
+def heat(P, time):
+    return P * time
+
+def temp_change(heat, mass, specific_heat):
+    return heat / (mass * specific_heat)
+
+def voltage(I, R):
+    return I * R
 
 # Define the range of diameters (d)
 d_vals = np.linspace(0.0001, 0.003, 200)
@@ -18,22 +40,19 @@ heat_data = []
 temp_change_data = []
 
 for d in d_vals:
-    for n in range (wind_l(d)):
+    B_val = 0
+    for n in range(wind_l(d)):
         cham_d = cham + 2*((n-1) * (d + inst))
-        B_val= B_v_l(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_v_r(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_h_t(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_h_b(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_v2_l(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_v2_r(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_h2_t(1.7961570593149538, d_vals, 0, 0, 0) + \
-                                       B_h2_b(1.7961570593149538, d_vals, 0, 0, 0)
-
-
-
+        B_val += B_v_l(Imax, d, 0, 0, 0) + \
+                 B_v_r(Imax, d, 0, 0, 0) + \
+                 B_h_t(Imax, d, 0, 0, 0) + \
+                 B_h_b(Imax, d, 0, 0, 0) + \
+                 B_v2_l(Imax, d, 0, 0, 0) + \
+                 B_v2_r(Imax, d, 0, 0, 0) + \
+                 B_h2_t(Imax, d, 0, 0, 0) + \
+                 B_h2_b(Imax, d, 0, 0, 0)
 
     # Calculate power for the given diameter
-   # def P(d) = Imax**2 * R(d)
     P_val = P(d)
     # Calculate heat for the given power and time
     heat_val = heat(P_val, time)
